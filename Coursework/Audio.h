@@ -1,15 +1,21 @@
 #pragma once
 
-#define DR_WAV_IMPLEMENTATION
-#include "dr_wav.h"
-
-#define SOKOL_IMPL
-#include "sokol_audio.h"
-
-class Audio
+struct AudioData
+{
+	unsigned int channels;
+	unsigned int samplerate;
+	drwav_uint64 currentFrame = 0;
+	drwav_uint64 numFrames;
+	const char* filename;
+	float* data;
+};
+class AoedeAudio
 {
 public:
-	Audio();
-	~Audio();
+	AoedeAudio();
+	~AoedeAudio();
+	void init();
+private:
+	AudioData audioData;
 };
 
