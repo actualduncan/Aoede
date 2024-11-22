@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClCompile Include="App1.cpp" />
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="AudioLoader.cpp" />
     <ClCompile Include="ColourShader.cpp" />
     <ClCompile Include="ComputeBlend.cpp" />
     <ClCompile Include="ComputeBrightness.cpp" />
@@ -190,12 +191,14 @@
   <ItemGroup>
     <ClInclude Include="App1.h" />
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="AudioLoader.h" />
     <ClInclude Include="ColourShader.h" />
     <ClInclude Include="ComputeBlend.h" />
     <ClInclude Include="ComputeBrightness.h" />
     <ClInclude Include="ComputeDownSample.h" />
     <ClInclude Include="ComputeUpSample.h" />
     <ClInclude Include="DepthShader.h" />
+    <ClInclude Include="dr_mp3.h" />
     <ClInclude Include="dr_wav.h" />
     <ClInclude Include="HorizontalBlurShader.h" />
     <ClInclude Include="sokol_audio.h" />

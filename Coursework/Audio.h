@@ -1,14 +1,9 @@
 #pragma once
 
-struct AudioData
-{
-	unsigned int channels;
-	unsigned int samplerate;
-	drwav_uint64 currentFrame = 0;
-	drwav_uint64 numFrames;
-	const char* filename;
-	float* data;
-};
+#include <iostream>
+
+class AudioLoader;
+
 class AoedeAudio
 {
 public:
@@ -16,6 +11,6 @@ public:
 	~AoedeAudio();
 	void init();
 private:
-	AudioData audioData;
+	std::unique_ptr<AudioLoader> audioLoader;
 };
 

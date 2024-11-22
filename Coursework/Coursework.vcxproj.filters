@@ -96,6 +96,9 @@
     <ClCompile Include="Audio.cpp">
       <Filter>Source Files\AoedeAudio</Filter>
     </ClCompile>
+    <ClCompile Include="AudioLoader.cpp">
+      <Filter>Source Files\AoedeAudio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App1.h">
@@ -162,6 +165,12 @@
       <Filter>Header Files\AoedeAudio</Filter>
     </ClInclude>
     <ClInclude Include="dr_wav.h">
+      <Filter>Header Files\AoedeAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="dr_mp3.h">
+      <Filter>Header Files\AoedeAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLoader.h">
       <Filter>Header Files\AoedeAudio</Filter>
     </ClInclude>
   </ItemGroup>
