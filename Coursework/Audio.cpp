@@ -1,6 +1,6 @@
 #include "Audio.h"
 #include "AudioLoader.h"
-
+#include "AudioVoiceManager.h"
 #define SOKOL_IMPL
 #include "sokol_audio.h"
 
@@ -39,10 +39,10 @@ void audioCallback(float* buffer, int numFrames, int numChannels, void* userData
 
 void AoedeAudio::init()
 {
-	audioLoader = std::make_unique<AudioLoader>();
-	if (audioLoader->loadWAV("res/loop.wav"))
+	m_audioLoader = std::make_unique<AudioLoader>();
+	if (m_audioLoader->loadAudio("res/loop.wav"))
 	{
-		AudioLoader::AudioData& audioData = *audioLoader->GetAudio("res/loop.wav");
+		AudioLoader::AudioData& audioData = *m_audioLoader->GetAudio("res/loop.wav");
 
 		saudio_desc audioDescriptor = {};
 
@@ -62,3 +62,19 @@ void AoedeAudio::init()
 	}
 }
 
+void AoedeAudio::playSound(AudioHandle handle)
+{
+	if (m_audioHandles.find(handle.getName()) != m_audioHandles.end())
+	{
+		// Handle Already exists
+	}
+
+	if (m_audioLoader->GetAudio(handle.getDesc().filename) == nullptr)
+	{
+
+	}
+
+	m_audioHandles.insert({ handle.getName(), handle });
+
+	//m_audioVoiceManager->allocateVoice()
+}

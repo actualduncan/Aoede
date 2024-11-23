@@ -13,3 +13,8 @@ AudioVoiceManager::~AudioVoiceManager()
 {
 
 }
+
+bool AudioVoiceManager::allocateVoice(AudioHandle* handle)
+{
+
+}

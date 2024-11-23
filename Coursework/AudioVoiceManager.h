@@ -1,13 +1,16 @@
 #pragma once
 #include "AudioVoice.h"
+#include "AudioListener.h"
 #include <vector>
 #include <iostream>
-#include "AudioListener.h"
+
 class AudioVoiceManager
 {
 public:
 	AudioVoiceManager();
 	~AudioVoiceManager();
+
+	bool allocateVoice(AudioHandle* handle);
 private:
 	static constexpr int MAX_ALLOCATED_VOICES = 15;
 

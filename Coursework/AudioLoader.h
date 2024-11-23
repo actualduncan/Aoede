@@ -1,13 +1,17 @@
 #pragma once
 
 #include "dr_wav.h"
-
+#include "AudioHelpers.h"
 
 #include "dr_mp3.h"
 #include <map>
+
+
+
 class AudioLoader
 {
 public:
+
 	struct AudioData
 	{
 		unsigned int channels;
@@ -21,6 +25,7 @@ public:
 	AudioLoader();
 	~AudioLoader();
 
+	bool loadAudio(const char* filename);
 	bool loadWAV(const char* filename);
 	bool loadMP3(const char* filename);
 	bool convertMonoToStereo(const char* filename);

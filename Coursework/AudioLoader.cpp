@@ -3,6 +3,13 @@
 #include "dr_mp3.h"
 #define DR_WAV_IMPLEMENTATION
 #include "dr_wav.h"
+#include <string>
+namespace AudioFileType
+{
+	const char* WAV = ".wav";
+	const char* MP3 = ".mp3";
+
+};
 AudioLoader::AudioLoader()
 {
 
@@ -11,6 +18,30 @@ AudioLoader::AudioLoader()
 AudioLoader::~AudioLoader()
 {
 
+}
+bool whitepsace(char c)
+{
+	return c == ' ';
+}
+bool AudioLoader::loadAudio(const char* filename)
+{
+	std::string filenameAsString(filename);
+
+	std::string filepath = filenameAsString.substr(filenameAsString.find('.'));
+
+	if (filepath == AudioFileType::WAV)
+	{
+		return loadWAV(filename);
+	}
+	else if (filepath == AudioFileType::MP3)
+	{
+		return loadMP3(filename);
+	}
+	else
+	{
+		// incorrect input path
+		return false;
+	}
 }
 
 bool AudioLoader::loadMP3(const char* filename)

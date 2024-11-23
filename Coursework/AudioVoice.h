@@ -1,4 +1,5 @@
 #pragma once
+#include "AudioHelpers.h"
 #include "AudioLoader.h"
 #include <iostream>
 class AudioVoice
@@ -7,8 +8,8 @@ public:
 	AudioVoice(int id) : id(id) {};
 	~AudioVoice() {};
 	bool SetAudioAsset(std::shared_ptr<AudioLoader::AudioData> inAudioAsset) {};
+	bool isActive() { return m_isActive; };
 private:
-	std::shared_ptr<AudioLoader::AudioData> audioAsset;
 
 	int id;
 	int priority;
@@ -18,7 +19,7 @@ private:
 	float pan;
 	float attenuation;
 	bool isLooping;
-	bool isActive;
+	bool m_isActive;
 
 };
 
