@@ -1,8 +1,11 @@
 #pragma once
-#include "AudioVoice.h"
-#include "AudioListener.h"
+
+//#include "AudioListener.h"
 #include <vector>
 #include <iostream>
+#include "AudioVoice.h"
+class AudioVoice;
+class AudioHandle;
 
 class AudioVoiceManager
 {
@@ -11,11 +14,15 @@ public:
 	~AudioVoiceManager();
 
 	bool allocateVoice(AudioHandle* handle);
+	void activateVoice(AudioHandle* handle);
+	std::vector<AudioVoice*>* getActiveVoices();
 private:
 	static constexpr int MAX_ALLOCATED_VOICES = 15;
 
-	std::vector<std::unique_ptr<AudioVoice>> voicePool;
+	std::vector<AudioVoice*> voicePool;
 
-	std::shared_ptr<AudioListener> activeListener;
+	//std::shared_ptr<AudioListener> activeListener;
+
+	int activeVoices;
 };
 

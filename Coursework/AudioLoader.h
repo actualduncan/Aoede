@@ -1,7 +1,7 @@
 #pragma once
 
 #include "dr_wav.h"
-#include "AudioHelpers.h"
+
 
 #include "dr_mp3.h"
 #include <map>
@@ -19,6 +19,7 @@ public:
 		drwav_uint64 currentFrame = 0;
 		drwav_uint64 numFrames;
 		const char* filename;
+		int max_voices = 2;
 		float* data;
 	};
 

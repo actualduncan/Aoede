@@ -14,6 +14,7 @@ struct AudioDesc
 class AudioHandle
 {
 public:
+	AudioHandle() {};
 	AudioHandle(const char* handleName, AudioDesc desc) : m_handleName(handleName), m_desc(desc) {}
 	const char* getName() { return m_handleName; }
 	AudioDesc getDesc() { return m_desc; }
