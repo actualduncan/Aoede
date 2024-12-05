@@ -2,9 +2,10 @@
 // Lab 1 example, simple coloured triangle mesh
 #include "App1.h"
 #include "Audio.h"
+#include <string>
 App1::App1()
 {
-
+	buffer = new char[50];
 }
 App1::~App1()
 {
@@ -74,7 +75,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	// Call super/parent init function (required!)
 	BaseApplication::init(hinstance, hwnd, screenWidth, screenHeight, in, VSYNC, FULL_SCREEN);
 
-	AoedeAudio* audio = new AoedeAudio();
+	audio = new AoedeAudio();
 	audio->init();
 	//init
 	initShadowMaps();
@@ -326,7 +327,9 @@ bool App1::frame()
 	bool result;
 	
 	updateInput();
-	
+
+	audio->PopulateAudioBuffer();
+
 	result = BaseApplication::frame();
 
 	timeInSeconds += timer->getTime();
@@ -695,7 +698,24 @@ void App1::finalpass()
 
 
 }
+struct AudioDesc
+{
+	const char* filename = "";
+	float volume = 1.0f;
+	bool isLooping = false;
+};
 
+class AudioHandle
+{
+public:
+	AudioHandle() {};
+	AudioHandle(const char* handleName, AudioDesc desc) : m_handleName(handleName), m_desc(desc) {}
+	const char* getName() { return m_handleName; }
+	AudioDesc getDesc() { return m_desc; }
+private:
+	const char* m_handleName = "";
+	AudioDesc m_desc;
+};
 
 void App1::gui()
 {
@@ -707,6 +727,38 @@ void App1::gui()
 	// Build UI
 	ImGui::Text("FPS: %.2f", timer->getFPS());
 	ImGui::Checkbox("Wireframe mode", &wireframeToggle);
+	
+	ImGui::InputText("input", buffer, 20);
+	if (ImGui::Button("play song"))
+	{
+		{
+			AudioDesc desc{};
+			desc.filename = buffer;
+			AudioHandle handle(buffer, desc);
+			audio->playSound(handle);
+		}
+	}
+	if (ImGui::Button("play loop"))
+	{
+		{
+			AudioDesc desc{};
+			desc.filename = "res/Loop.wav";
+			desc.isLooping = true;
+			std::string name = "yes";
+			AudioHandle handle(name.c_str(), desc);
+			audio->playSound(handle);
+
+		}
+	}
+
+	if (ImGui::Button("play car crash"))
+	{
+		AudioDesc desc{};
+		desc.filename = "res/carcrash.wav";
+		AudioHandle handle("yes3", desc);
+		audio->playSound(handle);
+	}
+
 	if (wireframeToggle)
 	{
 		viewMode = 0;

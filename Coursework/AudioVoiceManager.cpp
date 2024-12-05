@@ -14,7 +14,7 @@ AudioVoiceManager::~AudioVoiceManager()
 
 }
 
-bool AudioVoiceManager::allocateVoice(AudioHandle* handle)
+bool AudioVoiceManager::allocateVoice(AudioHandle* handle, int numFrames)
 {
 
 	for (auto& it = voicePool.begin(); it < voicePool.end(); ++it)
@@ -24,6 +24,7 @@ bool AudioVoiceManager::allocateVoice(AudioHandle* handle)
 			continue;
 		}
 		(*it)->setAudioHandle(handle);
+		(*it)->numFrames = numFrames;
 		return true;
 	}
 
@@ -34,10 +35,14 @@ void AudioVoiceManager::activateVoice(AudioHandle* handle)
 {
 	for (auto& it = voicePool.begin(); it < voicePool.end(); ++it)
 	{
+		if((*it)->getAudioHandle() == nullptr)
+		{
+			continue;
+		}
+
 		if ((*it)->getAudioHandle()->getName() == handle->getName() )
 		{
 			(*it)->setActive(true);
-			return;
 		}
 	}
 }

@@ -170,6 +170,7 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="AudioListener.cpp" />
     <ClCompile Include="AudioLoader.cpp" />
+    <ClCompile Include="AudioRingBuffer.cpp" />
     <ClCompile Include="AudioVoice.cpp" />
     <ClCompile Include="AudioVoiceManager.cpp" />
     <ClCompile Include="ColourShader.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="AudioHelpers.h" />
     <ClInclude Include="AudioListener.h" />
     <ClInclude Include="AudioLoader.h" />
+    <ClInclude Include="AudioRingBuffer.h" />
     <ClInclude Include="AudioVoice.h" />
     <ClInclude Include="AudioVoiceManager.h" />
     <ClInclude Include="ColourShader.h" />

@@ -22,6 +22,7 @@
 #include "ComputeBlend.h"
 #include "ColourShader.h"
 
+class AoedeAudio;
 // main application
 class App1 : public BaseApplication
 {
@@ -53,8 +54,8 @@ protected:
 	void finalpass();
 
 private:
-
-
+	char* buffer;
+	AoedeAudio* audio;
 	// Models and Objects
 	AModel* boatModel, * crateModel, * barrelModel, * woodenBoxModel, * kegModel;
 	SphereMesh* sphere;

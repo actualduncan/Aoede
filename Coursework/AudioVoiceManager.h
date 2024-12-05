@@ -13,7 +13,7 @@ public:
 	AudioVoiceManager();
 	~AudioVoiceManager();
 
-	bool allocateVoice(AudioHandle* handle);
+	bool allocateVoice(AudioHandle* handle, int numFrames);
 	void activateVoice(AudioHandle* handle);
 	std::vector<AudioVoice*>* getActiveVoices();
 private:

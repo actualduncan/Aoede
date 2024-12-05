@@ -7,7 +7,7 @@
 class AudioVoiceManager;
 
 class AudioHandle;
-
+class AudioRingBuffer;
 class AoedeAudio
 {
 public:
@@ -22,5 +22,6 @@ private:
 	std::unique_ptr<AudioLoader> m_audioLoader;
 	std::unique_ptr<AudioVoiceManager> m_audioVoiceManager;
 	std::vector<AudioLoader::AudioData*> data;
+	AudioRingBuffer* bufferPtr;
 };
 

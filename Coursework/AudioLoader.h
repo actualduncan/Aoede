@@ -14,11 +14,11 @@ public:
 
 	struct AudioData
 	{
-		unsigned int channels;
-		unsigned int samplerate;
+		unsigned int channels = 2;
+		unsigned int samplerate = 44100;
 		drwav_uint64 currentFrame = 0;
-		drwav_uint64 numFrames;
-		const char* filename;
+		drwav_uint64 numFrames = 0;
+		const char* filename = "";
 		int max_voices = 2;
 		float* data;
 	};
@@ -31,6 +31,7 @@ public:
 	bool loadMP3(const char* filename);
 	bool convertMonoToStereo(const char* filename);
 	AudioData* GetAudio(const char* filename);
+	float* GetAudioFromFrame(const char* filename, int size, int marker);
 
 private:
 	std::map<const char*, AudioData> loadedAudio;

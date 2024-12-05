@@ -127,3 +127,10 @@ AudioLoader::AudioData* AudioLoader::GetAudio(const char* filename)
 	}
 }
 
+float* AudioLoader::GetAudioFromFrame(const char* filename, int size, int marker)
+{
+	if (loadedAudio.find(filename) != loadedAudio.end())
+	{
+		return &loadedAudio[filename].data[marker % loadedAudio[filename].numFrames];
+	}
+}
