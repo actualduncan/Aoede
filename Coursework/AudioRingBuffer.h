@@ -22,20 +22,20 @@ public:
 		//isAvailable = true;
 	};
 	float* getBuffer() { return currentbuffer; };
-	void write(int bytes, float* data, int currentFrame) { 
+	void write(int bytes, float* data, int currentFrame, float att) { 
 
 		if (currentbuffer == buffer)
 		{
 			for (int i = 0; i < bytes; ++i)
 			{
-				buffer2[i % bufferSize] += data[currentFrame + i];
+				buffer2[i % bufferSize] += data[currentFrame + i] * att;
 			}
 		}
 		else
 		{
 			for (int i = 0; i < bytes; ++i)
 			{
-				buffer[i % bufferSize] += data[currentFrame + i];
+				buffer[i % bufferSize] += data[currentFrame + i] * att;
 			}
 		}		
 	};

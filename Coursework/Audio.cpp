@@ -49,7 +49,7 @@ void audioCallback(float* buffer, int numFrames, int numChannels, void* userData
 void AoedeAudio::init()
 {
 	m_audioLoader = std::make_unique<AudioLoader>();
-	m_audioVoiceManager = std::make_unique<AudioVoiceManager>();
+	m_audioVoiceManager = new AudioVoiceManager();
 	bufferPtr = new AudioRingBuffer();
 
 	PopulateAudioBuffer();
@@ -70,8 +70,14 @@ void AoedeAudio::init()
 	}
 }
 
+void processAudio(float* audio, int numframes, float att)
+{
+
+}
+
 void AoedeAudio::PopulateAudioBuffer()
 {
+	m_audioVoiceManager->updateVoices();
 	std::vector<AudioVoice*>* voices = m_audioVoiceManager->getActiveVoices();
 	for (auto& it = voices->begin(); it < voices->end(); ++it)
 	{
@@ -87,7 +93,7 @@ void AoedeAudio::PopulateAudioBuffer()
 	{
 		if ((*it)->isActive() && (*it)->currentFrame < (*it)->numFrames && !bufferPtr->isPopulated)
 		{
-			bufferPtr->write(2048 % ((*it)->numFrames - (*it)->currentFrame), m_audioLoader->GetAudio((*it)->getAudioHandle()->getDesc().filename)->data, (*it)->currentFrame);
+			bufferPtr->write(2048 % ((*it)->numFrames - (*it)->currentFrame), m_audioLoader->GetAudio((*it)->getAudioHandle()->getDesc().filename)->data, (*it)->currentFrame, (*it)->getAttenuation());
 			(*it)->currentFrame += 2048;
 		}
 
@@ -120,10 +126,21 @@ void AoedeAudio::playSound(AudioHandle handle)
 	int numframes = m_audioLoader->GetAudio(handle.getDesc().filename)->numFrames;
 	m_audioVoiceManager->allocateVoice(&m_audioHandles[handle.getName()], numframes);
 	m_audioVoiceManager->activateVoice(&m_audioHandles[handle.getName()]);
+}
 
-	// i don't need audio mixer
-	// get buffer size, add audio data to buffer then use callback to make audio go in ears, all this mixer shite is bad
-	// RINGBUFFER!"
+AudioVoiceManager* AoedeAudio::getAudioVoiceManager()
+{
+	return m_audioVoiceManager;
+}
 
-	
+void AoedeAudio::updatePosition(std::string handleName, float x, float y, float z)
+{
+	if (m_audioHandles.find(handleName) != m_audioHandles.end())
+	{
+		vec3 newPosition;
+		newPosition.x = x;
+		newPosition.y = y;
+		newPosition.z = z;
+		m_audioHandles[handleName].setPosition(newPosition);
+	}
 }

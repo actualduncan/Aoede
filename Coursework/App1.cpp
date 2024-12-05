@@ -3,6 +3,8 @@
 #include "App1.h"
 #include "Audio.h"
 #include <string>
+#include "AudioHelpers.h"
+#include "AudioVoiceManager.h"
 App1::App1()
 {
 	buffer = new char[50];
@@ -77,6 +79,9 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 
 	audio = new AoedeAudio();
 	audio->init();
+	listener = new AudioListener();
+
+	audio->getAudioVoiceManager()->setListener(listener);
 	//init
 	initShadowMaps();
 	initLighting();
@@ -302,6 +307,11 @@ void App1::initGUI() // Setup GUI Variables
 	waterTessellation = 1.0f;
 	viewMode = 1;
 
+	for (int i = 0; i < 3; ++i)
+	{
+		audioxyz[i] = 0;
+	}
+
 	for (int i = 0; i < MAX_LIGHTS; i++)
 	{
 		displayShadowMaps[i] = false;
@@ -325,9 +335,9 @@ bool App1::frame()
 {
 	
 	bool result;
-	
+	listener->UpdatePosition(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
 	updateInput();
-
+	audio->updatePosition("yes", audioxyz[0], audioxyz[1], audioxyz[2]);
 	audio->PopulateAudioBuffer();
 
 	result = BaseApplication::frame();
@@ -698,24 +708,7 @@ void App1::finalpass()
 
 
 }
-struct AudioDesc
-{
-	const char* filename = "";
-	float volume = 1.0f;
-	bool isLooping = false;
-};
 
-class AudioHandle
-{
-public:
-	AudioHandle() {};
-	AudioHandle(const char* handleName, AudioDesc desc) : m_handleName(handleName), m_desc(desc) {}
-	const char* getName() { return m_handleName; }
-	AudioDesc getDesc() { return m_desc; }
-private:
-	const char* m_handleName = "";
-	AudioDesc m_desc;
-};
 
 void App1::gui()
 {
@@ -745,12 +738,12 @@ void App1::gui()
 			desc.filename = "res/Loop.wav";
 			desc.isLooping = true;
 			std::string name = "yes";
-			AudioHandle handle(name.c_str(), desc);
+			AudioHandle handle(name, desc, audioxyz[0], audioxyz[1], audioxyz[2]);
 			audio->playSound(handle);
 
 		}
 	}
-
+	ImGui::SliderFloat3("loop pos", audioxyz, -70.0f, 70.0f);
 	if (ImGui::Button("play car crash"))
 	{
 		AudioDesc desc{};

@@ -15,12 +15,14 @@ public:
 	~AoedeAudio();
 	void init();
 	void update();
+	void updatePosition(std::string, float x, float y, float z);
 	void playSound(AudioHandle handle);
 	void PopulateAudioBuffer();
+	AudioVoiceManager* getAudioVoiceManager();
 private:
-	std::map<const char*, AudioHandle> m_audioHandles;
+	std::map<std::string, AudioHandle> m_audioHandles;
 	std::unique_ptr<AudioLoader> m_audioLoader;
-	std::unique_ptr<AudioVoiceManager> m_audioVoiceManager;
+	AudioVoiceManager* m_audioVoiceManager;
 	std::vector<AudioLoader::AudioData*> data;
 	AudioRingBuffer* bufferPtr;
 };
