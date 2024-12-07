@@ -16,6 +16,13 @@ public:
 		attenuation = att;
 	};
 	float getAttenuation() { return attenuation; };
+	void setPan(float left, float right) { 
+		panL = left;
+		panR = right;
+	};
+
+	float getPanL() { return panL; };
+	float getPanR() { return panR; };
 	bool populated;
 	int currentFrame = 0;
 	int numFrames;
@@ -27,7 +34,8 @@ private:
 	float durationSeconds;
 	float volume;
 	float pitch;
-	float pan;
+	float panL;
+	float panR;
 	float attenuation;
 	bool isLooping;
 	bool m_isActive;

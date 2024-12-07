@@ -22,20 +22,25 @@ public:
 		//isAvailable = true;
 	};
 	float* getBuffer() { return currentbuffer; };
-	void write(int bytes, float* data, int currentFrame, float att) { 
-
+	float getPanL() { return panL; }
+	float getPanR() { return panR; }
+	float panL;
+	float panR;
+	void write(int bytes, float* data, int currentFrame, float att, float leftPan, float rightPan) { 
+		panL = leftPan;
+		panR = rightPan;
 		if (currentbuffer == buffer)
 		{
 			for (int i = 0; i < bytes; ++i)
 			{
-				buffer2[i % bufferSize] += data[currentFrame + i] * att;
+				buffer2[i ] += data[currentFrame + i] * att;
 			}
 		}
 		else
 		{
 			for (int i = 0; i < bytes; ++i)
 			{
-				buffer[i % bufferSize] += data[currentFrame + i] * att;
+				buffer[i ] += data[currentFrame + i] * att;
 			}
 		}		
 	};

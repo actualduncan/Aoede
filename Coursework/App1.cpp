@@ -336,6 +336,7 @@ bool App1::frame()
 	
 	bool result;
 	listener->UpdatePosition(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
+	listener->UpdateRotation(camera->getForwardVector().x, camera->getForwardVector().y, camera->getForwardVector().z);
 	updateInput();
 	audio->updatePosition("yes", audioxyz[0], audioxyz[1], audioxyz[2]);
 	audio->PopulateAudioBuffer();

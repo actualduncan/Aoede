@@ -33,8 +33,8 @@ void audioCallback(float* buffer, int numFrames, int numChannels, void* userData
 			buffer[2 * i + 1] = 0.0f;
 
 
-			buffer[2 * i + 0] += audioData->getBuffer()[i] *0.5;
-			buffer[2 * i + 1] += audioData->getBuffer()[i] * 0.5;
+			buffer[2 * i + 0] += audioData->getBuffer()[i] * 0.5 * audioData->getPanL();
+			buffer[2 * i + 1] += audioData->getBuffer()[i] * 0.5 * audioData->getPanR();
 
 		}
 
@@ -70,9 +70,14 @@ void AoedeAudio::init()
 	}
 }
 
-void processAudio(float* audio, int numframes, float att)
-{
+void processAudio(float* audio, int numframes, float att, float leftpan, float rightpan)
 
+{
+	for (int i = 0; i < numframes; ++i)
+	{
+		audio[2 * i + 0] *= leftpan;
+		audio[2 * i + 1] *= rightpan;
+	}
 }
 
 void AoedeAudio::PopulateAudioBuffer()
@@ -93,7 +98,8 @@ void AoedeAudio::PopulateAudioBuffer()
 	{
 		if ((*it)->isActive() && (*it)->currentFrame < (*it)->numFrames && !bufferPtr->isPopulated)
 		{
-			bufferPtr->write(2048 % ((*it)->numFrames - (*it)->currentFrame), m_audioLoader->GetAudio((*it)->getAudioHandle()->getDesc().filename)->data, (*it)->currentFrame, (*it)->getAttenuation());
+
+			bufferPtr->write(2048 % ((*it)->numFrames - (*it)->currentFrame), m_audioLoader->GetAudio((*it)->getAudioHandle()->getDesc().filename)->data, (*it)->currentFrame, (*it)->getAttenuation(), (*it)->getPanL(), (*it)->getPanR());
 			(*it)->currentFrame += 2048;
 		}
 

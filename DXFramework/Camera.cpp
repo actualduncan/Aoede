@@ -53,6 +53,11 @@ XMFLOAT3 Camera::getRotation()
 }
 
 // Re-calucation view Matrix.
+XMFLOAT3 Camera::getForwardVector()
+{
+	return forwardVector;
+}
+
 void Camera::update()
 {
 	XMVECTOR up, positionv, lookAt;
@@ -68,7 +73,9 @@ void Camera::update()
 	pitch = rotation.x * 0.0174532f;
 	yaw = rotation.y * 0.0174532f;
 	roll = rotation.z * 0.0174532f;
-
+	forwardVector.x = cos(pitch) * sin(yaw);
+	forwardVector.y = -sin(pitch);
+	forwardVector.z = cos(pitch) * cos(yaw);
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 

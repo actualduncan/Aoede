@@ -89,6 +89,19 @@ float getDistance(vec3 position1, vec3 position2)
 	return std::abs(std::sqrtf(std::powf((position1.x - position2.x), 2) + std::powf((position1.y - position2.y), 2) + std::powf((position1.z - position2.z), 2)));
 }
 
+void panAudio(float angle, float& left, float& right)
+{
+	left = (std::sqrtf(2) / 2.0f) * (std::cosf(angle) - sinf(angle));
+	right = (std::sqrtf(2) / 2.0f) * (std::cosf(angle) + sinf(angle));
+}
+
+float getAngle(vec3 pos1, vec3 pos2)
+{
+	float dot = pos1.x * pos2.x + pos1.y * pos2.y;
+	float det = pos1.x * pos2.y - pos1.y * pos2.x;
+	return std::atan2(dot, det);
+}
+
 void AudioVoiceManager::updateVoices()
 {
 	for (auto& it = voicePool.begin(); it < voicePool.end(); ++it)
@@ -97,7 +110,14 @@ void AudioVoiceManager::updateVoices()
 		{
 			//figure out 
 			(*it)->setAttenuation(lerp(0.7f, 0.0f, ramp(5.0f, 20.0f,getDistance(activeListener->getPosition(), (*it)->getAudioHandle()->getPosition()))));
+			float panL = 0.0f;
+			float panR = 0.0f;
+			float angle = getAngle(activeListener->getPosition(), (*it)->getAudioHandle()->getPosition());
+
+			panAudio(angle, panL, panR);
+			(*it)->setPan(panL, panR);
 			
+
 		}
 	}
 
