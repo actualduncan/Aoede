@@ -725,16 +725,6 @@ void App1::gui()
 	ImGui::Text("FPS: %.2f", timer->getFPS());
 	ImGui::Checkbox("Wireframe mode", &wireframeToggle);
 	
-	ImGui::InputText("input", buffer, 20);
-	if (ImGui::Button("play song"))
-	{
-		{
-			AudioDesc desc{};
-			desc.filename = buffer;
-			AudioHandle handle(buffer, desc);
-			audio->playSound(handle);
-		}
-	}
 	if (ImGui::Button("play loop"))
 	{
 		{
@@ -751,8 +741,8 @@ void App1::gui()
 	if (ImGui::Button("play car crash"))
 	{
 		AudioDesc desc{};
-		desc.filename = "res/calm.mp3";
-		AudioHandle handle("yes3", desc);
+		desc.filename = "res/carcrash.wav";
+		AudioHandle handle("yes3", desc, audioxyz[0], audioxyz[1], audioxyz[2]);
 		audio->playSound(handle);
 	}
 
