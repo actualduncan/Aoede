@@ -2,7 +2,7 @@
 #include <string>
 struct vec3
 {
-	int x, y, z;
+	float x, y, z;
 };
 
 struct AudioDesc

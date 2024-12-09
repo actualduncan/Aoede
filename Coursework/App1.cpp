@@ -336,7 +336,7 @@ bool App1::frame()
 	
 	bool result;
 	listener->UpdatePosition(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
-	listener->UpdateRotation(camera->getForwardVector().x, camera->getForwardVector().y, camera->getForwardVector().z);
+	listener->UpdateRotation(camera->getRightVector().x, camera->getRightVector().y, camera->getRightVector().z);
 	updateInput();
 	audio->updatePosition("yes", audioxyz[0], audioxyz[1], audioxyz[2]);
 	audio->PopulateAudioBuffer();
@@ -660,8 +660,11 @@ void App1::basepass()
 		colourShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights[i]->getDiffuseColour());
 		colourShader->render(renderer->getDeviceContext(), sphere->getIndexCount());
 	}
+	worldMatrix = XMMatrixTranslation(audioxyz[0], audioxyz[1], audioxyz[2]);
+	sphere->sendData(renderer->getDeviceContext());
+	colourShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights[0]->getDiffuseColour());
+	colourShader->render(renderer->getDeviceContext(), sphere->getIndexCount());
 
-	
 	// display shadow maps based on GUI
 	for (int i = 0; i < MAX_LIGHTS; i++)
 	{
@@ -736,7 +739,7 @@ void App1::gui()
 	{
 		{
 			AudioDesc desc{};
-			desc.filename = "res/Loop.wav";
+			desc.filename = "res/calm.mp3";
 			desc.isLooping = true;
 			std::string name = "yes";
 			AudioHandle handle(name, desc, audioxyz[0], audioxyz[1], audioxyz[2]);
@@ -744,11 +747,11 @@ void App1::gui()
 
 		}
 	}
-	ImGui::SliderFloat3("loop pos", audioxyz, -70.0f, 70.0f);
+	ImGui::SliderFloat3("loop pos", audioxyz, -20.0f, 20.0f);
 	if (ImGui::Button("play car crash"))
 	{
 		AudioDesc desc{};
-		desc.filename = "res/carcrash.wav";
+		desc.filename = "res/calm.mp3";
 		AudioHandle handle("yes3", desc);
 		audio->playSound(handle);
 	}

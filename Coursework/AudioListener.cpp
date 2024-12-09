@@ -16,7 +16,7 @@ void AudioListener::UpdatePosition(int x, int y, int z)
 	position.y = y;
 	position.z = z;
 }
-void AudioListener::UpdateRotation(int x, int y, int z)
+void AudioListener::UpdateRotation(float x, float y, float z)
 {
 	rotation.x = x;
 	rotation.y = y;

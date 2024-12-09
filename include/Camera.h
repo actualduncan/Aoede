@@ -38,6 +38,8 @@ public:
 	XMFLOAT3 getPosition();		///< Get camera's current position
 	XMFLOAT3 getRotation();		///< Get camera's current rotation
 	XMFLOAT3 getForwardVector();
+	XMFLOAT3 getRightVector();
+	XMFLOAT3 getUpVector();
 	void update();				///< Update camera, recalculates view matrix based on rotation
 	XMMATRIX getViewMatrix();	///< Get current view matrix of camera
 	XMMATRIX getOrthoViewMatrix();	///< Get current orthographic view matrix for camera
@@ -58,6 +60,8 @@ public:
 
 private:
 	XMFLOAT3 forwardVector;
+	XMFLOAT3 upVector;
+	XMFLOAT3 rightVector;
 	XMFLOAT3 position;		///< float3 for position
 	XMFLOAT3 rotation;		///< float3 for rotation (angles)
 	XMMATRIX viewMatrix;	///< matrix for current view

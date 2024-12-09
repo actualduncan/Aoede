@@ -9,7 +9,7 @@ public:
 	~AudioListener();
 
 	void UpdatePosition(int x, int y, int z);
-	void UpdateRotation(int x, int y, int z);
+	void UpdateRotation(float x, float y, float z);
 	vec3 getPosition();
 	vec3 getRotation();
 private:
