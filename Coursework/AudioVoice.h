@@ -17,12 +17,17 @@ public:
 	};
 	float getAttenuation() { return attenuation; };
 	void setPan(float left, float right) { 
+		lastPanL = panL;
+		lastPanR = panR;
 		panL = left;
 		panR = right;
 	};
 
 	float getPanL() { return panL; };
 	float getPanR() { return panR; };
+	float getLastPanL() { return lastPanL; };
+	float getLastPanR() { return lastPanR; };
+
 	bool populated;
 	int currentFrame = 0;
 	int numFrames;
@@ -36,6 +41,8 @@ private:
 	float pitch;
 	float panL;
 	float panR;
+	float lastPanL;
+	float lastPanR;
 	float attenuation;
 	bool isLooping;
 	bool m_isActive;

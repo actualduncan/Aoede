@@ -108,6 +108,7 @@ private:
 	float waveThreeDir[2];
 	float waveFourDir[2];
 	float audioxyz[3];
+	float audio2xyz[3];
 	bool displayShadowMaps[MAX_LIGHTS];
 	
 

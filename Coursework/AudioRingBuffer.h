@@ -27,20 +27,21 @@ public:
 	float panL;
 	float panR;
 	void write(int bytes, float* data, int currentFrame, float att, float leftPan, float rightPan) { 
-		panL = leftPan;
-		panR = rightPan;
+
 		if (currentbuffer == buffer)
 		{
 			for (int i = 0; i < bytes; ++i)
 			{
-				buffer2[i ] += data[currentFrame + i] * att;
+				buffer2[2 * i + 0] += data[currentFrame  + i] * att * leftPan;
+				buffer2[2 * i + 1] += data[currentFrame + i + 1] * att * rightPan; 
 			}
 		}
 		else
 		{
 			for (int i = 0; i < bytes; ++i)
 			{
-				buffer[i ] += data[currentFrame + i] * att;
+				buffer[2 * i + 0] += data[currentFrame + i] * att * leftPan;
+				buffer[2 * i + 1] += data[currentFrame + i + 1] * att * rightPan;
 			}
 		}		
 	};
@@ -58,13 +59,13 @@ public:
 		isPopulated = false;
 	}
 
-	int bufferSize = 2048;
+	int bufferSize = 4096;
 	bool isAvailable = true;
 	bool isPopulated = false;
 private:
 	int current = 0;
 	float* currentbuffer;
-	float buffer[2048];
-	float buffer2[2048];
+	float buffer[4096];
+	float buffer2[4096];
 };
 

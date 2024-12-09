@@ -27,14 +27,16 @@ void audioCallback(float* buffer, int numFrames, int numChannels, void* userData
 	if (audioData->isPopulated)
 	{
 		audioData->isAvailable = false;
-		for (int i = 0; i < 2048; ++i)
+
+		//memcpy(buffer, audioData->getBuffer(), numFrames*2);
+		for (int i = 0; i < numFrames; ++i)
 		{
 			buffer[2 * i + 0] = 0.0f;// left channel
 			buffer[2 * i + 1] = 0.0f;
 
 
-			buffer[2 * i + 0] += audioData->getBuffer()[i] * 0.5 * audioData->getPanL();
-			buffer[2 * i + 1] += audioData->getBuffer()[i] * 0.5 * audioData->getPanR();
+			buffer[2 * i + 0] += audioData->getBuffer()[2 * i];
+			buffer[2 * i + 1] += audioData->getBuffer()[2 * i+1];
 
 		}
 
@@ -58,7 +60,7 @@ void AoedeAudio::init()
 
 	audioDescriptor.num_channels = 2;
 	audioDescriptor.stream_userdata_cb = audioCallback;
-	audioDescriptor.sample_rate = 44100 * 2;
+	audioDescriptor.sample_rate = 44100 *2;
 		//audioDescriptor.buffer_frames = 1;
 	audioDescriptor.user_data = (void*)bufferPtr;
 	
@@ -84,15 +86,6 @@ void AoedeAudio::PopulateAudioBuffer()
 {
 	m_audioVoiceManager->updateVoices();
 	std::vector<AudioVoice*>* voices = m_audioVoiceManager->getActiveVoices();
-	for (auto& it = voices->begin(); it < voices->end(); ++it)
-	{
-		if ((*it)->isActive() && !(*it)->populated)
-		{
-			data.push_back(m_audioLoader->GetAudio((*it)->getAudioHandle()->getDesc().filename));
-			(*it)->populated = true;
-		}
-	}
-
 	
 	for (auto& it = voices->begin(); it < voices->end(); ++it)
 	{

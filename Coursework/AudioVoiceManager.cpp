@@ -1,4 +1,4 @@
-#include "AudioVoiceManager.h"
+﻿#include "AudioVoiceManager.h"
 #include "AudioHelpers.h"
 #include <cmath>
 #include <iostream>
@@ -88,16 +88,20 @@ float getDistance(vec3 position1, vec3 position2)
 
 	return std::abs(std::sqrtf(std::powf((position1.x - position2.x), 2) + std::powf((position1.y - position2.y), 2) + std::powf((position1.z - position2.z), 2)));
 }
-
+const float M_PI = 3.14f;
 void panAudio(float angle, float& left, float& right)
 
 {
-	left = (std::sqrtf(2) / 2.0f) * (std::cosf(angle) + sinf(angle));
-	right = (std::sqrtf(2) / 2.0f) * (std::cosf(angle) - sinf(angle));
-
-	if (std::abs(std::abs(left) - std::abs(right)) < 0.2f)
+	// For sounds behind the listener (angle near ±π), balance left and right
+	if (std::abs(angle - M_PI) < 0.1f || std::abs(angle + M_PI) < 0.1f)
 	{
-		right = -left;
+		left = right = 0.7f; // Equal volume for both channels
+	}
+	else
+	{
+		// Default stereo panning
+		left = (std::sqrtf(2) / 2.0f) * (std::cosf(angle) + sinf(angle));
+		right = (std::sqrtf(2) / 2.0f) * (std::cosf(angle) - sinf(angle));
 	}
 }
 
@@ -109,13 +113,29 @@ float getAngle(vec3 forward, vec3 pos1, vec3 pos2)
 	direction.z = pos1.z - pos2.z;
 
 	float mag = std::sqrt(std::pow(direction.x, 2) + std::pow(direction.y, 2) + std::pow(direction.z, 2));
+	if (mag == 0)
+	{
+		return 0.0f;
+	}
 	direction.x /= mag;
 	direction.y /= mag;
 	direction.z /= mag;
-	float dot = direction.x * forward.x  + direction.y * forward.y + direction.z * forward.z;
+	//float dot = direction.x * forward.x  + direction.y * forward.y + direction.z * forward.z;
 
+	float forwardAngle = std::atan2(forward.z, forward.x); // Angle of the forward vector
+	float directionAngle = std::atan2(direction.z, direction.x); // Angle of the direction vector
 
-	return std::acos(dot);
+	// Calculate the difference between the angles
+	float angle = directionAngle - forwardAngle;
+
+	// Wrap the angle to the range [-π, π]
+	if (angle > M_PI)
+		angle -= 2.0f * M_PI;
+	else if (angle < -M_PI)
+		angle += 2.0f * M_PI;
+
+	return angle;
+
 
 }
 
@@ -129,9 +149,12 @@ void AudioVoiceManager::updateVoices()
 			(*it)->setAttenuation(lerp(0.7f, 0.0f, ramp(1.0f, 20.0f, getDistance(activeListener->getPosition(), (*it)->getAudioHandle()->getPosition()))));
 			float panL = 0.0f;
 			float panR = 0.0f;
+
 			float angle = getAngle(activeListener->getRotation(), activeListener->getPosition(), (*it)->getAudioHandle()->getPosition());
 
 			panAudio(angle, panL, panR);
+			panL = lerp((*it)->getLastPanL(), panL, 0.15f);
+			panR = lerp((*it)->getLastPanR(), panR, 0.15f);
 			(*it)->setPan(panL, panR);
 
 		}
