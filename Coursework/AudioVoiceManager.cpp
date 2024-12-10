@@ -85,9 +85,9 @@ float ramp(float min, float max, float value)
 
 float getDistance(vec3 position1, vec3 position2)
 {
-
 	return std::abs(std::sqrtf(std::powf((position1.x - position2.x), 2) + std::powf((position1.y - position2.y), 2) + std::powf((position1.z - position2.z), 2)));
 }
+
 const float M_PI = 3.14f;
 void panAudio(float angle, float& left, float& right)
 
@@ -159,8 +159,6 @@ void AudioVoiceManager::updateVoices()
 
 		}
 	}
-
-	
 }
 
 AudioVoice* AudioVoiceManager::getVoice(AudioHandle handle)
@@ -172,5 +170,7 @@ AudioVoice* AudioVoiceManager::getVoice(AudioHandle handle)
 			return (*it);
 		}
 	}
+
+	return nullptr;
 	
 }

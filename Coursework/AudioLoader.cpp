@@ -20,10 +20,12 @@ AudioLoader::~AudioLoader()
 {
 
 }
+
 bool whitepsace(char c)
 {
 	return c == ' ';
 }
+
 bool AudioLoader::loadAudio(const char* filename)
 {
 	std::string filenameAsString(filename);
@@ -60,7 +62,7 @@ bool AudioLoader::loadMP3(const char* filename)
 	audioData.samplerate = config.sampleRate;
 	audioData.channels = config.channels;
 
-	loadedAudio.insert({ audioData.filename, audioData });
+	m_loadedAudio.insert({ audioData.filename, audioData });
 
 	convertMonoToStereo(filename);
 	return true;
@@ -78,7 +80,7 @@ bool AudioLoader::loadWAV(const char* filename)
 		&audioData.numFrames,
 		NULL);
 
-	loadedAudio.insert({ audioData.filename, audioData });
+	m_loadedAudio.insert({ audioData.filename, audioData });
 
 	convertMonoToStereo(filename);
 	return true;
@@ -86,9 +88,9 @@ bool AudioLoader::loadWAV(const char* filename)
 
 bool AudioLoader::convertMonoToStereo(const char* filename)
 {
-	if (loadedAudio.find(filename) != loadedAudio.end())
+	if (m_loadedAudio.find(filename) != m_loadedAudio.end())
 	{
-		AudioData& audioData = loadedAudio[filename];
+		AudioData& audioData = m_loadedAudio[filename];
 
 		if (audioData.channels == 2)
 		{
@@ -117,9 +119,9 @@ bool AudioLoader::convertMonoToStereo(const char* filename)
 
 AudioLoader::AudioData* AudioLoader::GetAudio(const char* filename)
 {
-	if (loadedAudio.find(filename) != loadedAudio.end())
+	if (m_loadedAudio.find(filename) != m_loadedAudio.end())
 	{
-		return &loadedAudio[filename];
+		return &m_loadedAudio[filename];
 	}
 	else
 	{
@@ -129,8 +131,8 @@ AudioLoader::AudioData* AudioLoader::GetAudio(const char* filename)
 
 float* AudioLoader::GetAudioFromFrame(const char* filename, int size, int marker)
 {
-	if (loadedAudio.find(filename) != loadedAudio.end())
+	if (m_loadedAudio.find(filename) != m_loadedAudio.end())
 	{
-		return &loadedAudio[filename].data[marker % loadedAudio[filename].numFrames];
+		return &m_loadedAudio[filename].data[marker % loadedAudio[filename].numFrames];
 	}
 }

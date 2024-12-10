@@ -10,7 +10,15 @@
 
 class AudioLoader
 {
+private:
+	AudioLoader();
+	~AudioLoader();
 public:
+	static AudioLoader& getInstance()
+	{
+		static AudioLoader instance;
+		return instance;
+	}
 
 	struct AudioData
 	{
@@ -22,9 +30,8 @@ public:
 		int max_voices = 2;
 		float* data;
 	};
+	
 
-	AudioLoader();
-	~AudioLoader();
 
 	bool loadAudio(const char* filename);
 	bool loadWAV(const char* filename);
@@ -34,6 +41,6 @@ public:
 	float* GetAudioFromFrame(const char* filename, int size, int marker);
 
 private:
-	std::map<const char*, AudioData> loadedAudio;
+	std::map<const char*, AudioData> m_loadedAudio;
 };
 

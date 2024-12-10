@@ -21,7 +21,6 @@ public:
 	AudioVoiceManager* getAudioVoiceManager();
 private:
 	std::map<std::string, AudioHandle> m_audioHandles;
-	std::unique_ptr<AudioLoader> m_audioLoader;
 	AudioVoiceManager* m_audioVoiceManager;
 	std::vector<AudioLoader::AudioData*> data;
 	AudioRingBuffer* bufferPtr;

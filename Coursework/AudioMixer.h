@@ -6,19 +6,16 @@ class AudioVoice;
 class AudioMixer
 {
 public:
-	AudioMixer(AudioLoader* audioLoader) : m_audioLoader(audioLoader) {};
+	AudioMixer(AudioLoader* audioLoader, int maxBufferSize);
 	~AudioMixer();
 	
-	float* outputAudio(std::vector<AudioVoice*> activeVoices);
+	float* outputAudio(std::vector<AudioVoice*>* activeVoices);
 private:
-	struct OutputMixData
-	{
-		unsigned int channels;
-		unsigned int samplerate;
-		unsigned int currentFrame = 0;
-		unsigned int numFrames;
-	};
-
+	float calculateAttenuation();
+	void resetMix();
+	int m_maxBufferSize;
+	float* m_audioMix;
 	AudioLoader* m_audioLoader;
 };
+
 

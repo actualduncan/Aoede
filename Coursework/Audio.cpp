@@ -3,6 +3,7 @@
 #include "AudioLoader.h"
 #include "AudioRingBuffer.h"
 #include "AudioHelpers.h"
+#include "AudioMixer.h"
 #define SOKOL_IMPL
 #include "sokol_audio.h"
 
@@ -50,8 +51,8 @@ void audioCallback(float* buffer, int numFrames, int numChannels, void* userData
 
 void AoedeAudio::init()
 {
-	m_audioLoader = std::make_unique<AudioLoader>();
 	m_audioVoiceManager = new AudioVoiceManager();
+
 	bufferPtr = new AudioRingBuffer();
 
 	PopulateAudioBuffer();
@@ -72,16 +73,6 @@ void AoedeAudio::init()
 	}
 }
 
-void processAudio(float* audio, int numframes, float att, float leftpan, float rightpan)
-
-{
-	for (int i = 0; i < numframes; ++i)
-	{
-		audio[2 * i + 0] *= leftpan;
-		audio[2 * i + 1] *= rightpan;
-	}
-}
-
 void AoedeAudio::PopulateAudioBuffer()
 {
 	m_audioVoiceManager->updateVoices();
@@ -92,7 +83,7 @@ void AoedeAudio::PopulateAudioBuffer()
 		if ((*it)->isActive() && (*it)->currentFrame < (*it)->numFrames && !bufferPtr->isPopulated)
 		{
 
-			bufferPtr->write(2048 % ((*it)->numFrames - (*it)->currentFrame), m_audioLoader->GetAudio((*it)->getAudioHandle()->getDesc().filename)->data, (*it)->currentFrame, (*it)->getAttenuation(), (*it)->getPanL(), (*it)->getPanR());
+			bufferPtr->write(2048 % ((*it)->numFrames - (*it)->currentFrame), AudioLoader::getInstance().GetAudio((*it)->getAudioHandle()->getDesc().filename)->data, (*it)->currentFrame, (*it)->getAttenuation(), (*it)->getPanL(), (*it)->getPanR());
 			(*it)->currentFrame += 2048;
 		}
 
@@ -115,14 +106,14 @@ void AoedeAudio::playSound(AudioHandle handle)
 		// Handle Name Already exists
 	}
 
-	if (m_audioLoader->GetAudio(handle.getDesc().filename) == nullptr)
+	if (AudioLoader::getInstance().GetAudio(handle.getDesc().filename) == nullptr)
 	{
-		m_audioLoader->loadAudio(handle.getDesc().filename);
+		AudioLoader::getInstance().loadAudio(handle.getDesc().filename);
 	}
 
 	m_audioHandles.insert({ handle.getName(), handle });
 
-	int numframes = m_audioLoader->GetAudio(handle.getDesc().filename)->numFrames;
+	int numframes = AudioLoader::getInstance().GetAudio(handle.getDesc().filename)->numFrames;
 	m_audioVoiceManager->allocateVoice(&m_audioHandles[handle.getName()], numframes);
 	m_audioVoiceManager->activateVoice(&m_audioHandles[handle.getName()]);
 }
