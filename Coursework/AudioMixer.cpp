@@ -99,12 +99,12 @@ float* AudioMixer::outputAudio(std::vector<AudioVoice*>* activeVoices, AudioList
 	for (auto& activeVoiceIt = activeVoices->begin(); activeVoiceIt < activeVoices->end(); ++activeVoiceIt)
 	{
 		if ((*activeVoiceIt)->isActive())
-		{
+{
 			Mix(AudioLoader::getInstance().GetAudioFromFrame((*activeVoiceIt)->getAudioHandle()->getDesc().filename, 0, (*activeVoiceIt)->currentFrame),
 				*activeVoiceIt, activeListener);
 
 			if ((*activeVoiceIt)->getAudioHandle()->getDesc().isLooping)
-			{
+	{
 				(*activeVoiceIt)->currentFrame = ((*activeVoiceIt)->currentFrame + m_maxBufferSize) % (*activeVoiceIt)->numFrames;
 			}
 			else

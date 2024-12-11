@@ -8,7 +8,7 @@ class AudioMixer
 public:
 	AudioMixer(int maxBufferSize, int channels, int sampleRate);
 	~AudioMixer();
-	
+
 	float* outputAudio(std::vector<AudioVoice*>* activeVoices, AudioListener* activeListener);
 private:
 	float calculateAttenuation();

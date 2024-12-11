@@ -59,7 +59,7 @@ void AoedeAudio::init()
 	audioDescriptor.sample_rate = m_sampleRate * m_channels;
 	audioDescriptor.user_data = (void*)bufferPtr;
 	saudio_setup(&audioDescriptor);
-	
+
 	if (!saudio_isvalid())
 	{
 		exit(0);
