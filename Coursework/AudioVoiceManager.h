@@ -17,6 +17,7 @@ public:
 	void activateVoice(AudioHandle* handle);
 	std::vector<AudioVoice*>* getActiveVoices();
 	void setListener(AudioListener* listener);
+	AudioListener* getActiveListener();
 	void updateVoices();
 	AudioVoice* getVoice(AudioHandle handle);
 private:

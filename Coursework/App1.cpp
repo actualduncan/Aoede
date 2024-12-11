@@ -77,7 +77,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	// Call super/parent init function (required!)
 	BaseApplication::init(hinstance, hwnd, screenWidth, screenHeight, in, VSYNC, FULL_SCREEN);
 
-	audio = new AoedeAudio();
+	audio = new AoedeAudio(2048, 2, 44100);
 	audio->init();
 	listener = new AudioListener();
 
@@ -338,6 +338,7 @@ bool App1::frame()
 	bool result;
 	listener->UpdatePosition(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
 	listener->UpdateRotation(camera->getForwardVector().x, camera->getForwardVector().y, camera->getForwardVector().z);
+	listener->UpdateRight(camera->getRightVector().x, camera->getRightVector().y, camera->getRightVector().z);
 	updateInput();
 	audio->updatePosition("yes", audioxyz[0], audioxyz[1], audioxyz[2]);
 	audio->updatePosition("yes3", audio2xyz[0], audio2xyz[1], audio2xyz[2]);

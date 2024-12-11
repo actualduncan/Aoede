@@ -24,6 +24,15 @@ void AudioListener::UpdateRotation(float x, float y, float z)
 	rotation.z = z;
 }
 
+void AudioListener::UpdateRight(float x, float y, float z)
+{
+	PrevRotation = rotation;
+	right.x = x;
+	right.y = y;
+	right.z = z;
+}
+
+
 vec3 AudioListener::getPosition()
 {
 	return position;

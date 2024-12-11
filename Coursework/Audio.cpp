@@ -1,12 +1,16 @@
 #include "Audio.h"
 #include "AudioVoiceManager.h"
 #include "AudioLoader.h"
-#include "AudioRingBuffer.h"
+#include "AudioSwapChain.h"
 #include "AudioHelpers.h"
+#include "AudioMixer.h"
 #define SOKOL_IMPL
 #include "sokol_audio.h"
 
-AoedeAudio::AoedeAudio()
+AoedeAudio::AoedeAudio(int numFrames, int channels, int sampleRate)
+	: m_numFrames(numFrames)
+	, m_channels(channels)
+	, m_sampleRate(sampleRate)
 {
 
 }
@@ -18,17 +22,14 @@ AoedeAudio::~AoedeAudio()
 void audioCallback(float* buffer, int numFrames, int numChannels, void* userData)
 {
 	//Get our audio data from the passed-in userData variable.
-	AudioRingBuffer* audioData((AudioRingBuffer*)userData);
+	AudioSwapChain* audioData((AudioSwapChain*)userData);
 
 	//Get the samplerate our soundcard is running at.
 	const float samplerate((float)saudio_sample_rate());
 
 	//Just in case...
-	if (audioData->isPopulated)
+	if (audioData->isPopulated.load())
 	{
-		audioData->isAvailable = false;
-
-		//memcpy(buffer, audioData->getBuffer(), numFrames*2);
 		for (int i = 0; i < numFrames; ++i)
 		{
 			buffer[2 * i + 0] = 0.0f;// left channel
@@ -36,34 +37,27 @@ void audioCallback(float* buffer, int numFrames, int numChannels, void* userData
 
 
 			buffer[2 * i + 0] += audioData->getBuffer()[2 * i];
-			buffer[2 * i + 1] += audioData->getBuffer()[2 * i+1];
-
+			buffer[2 * i + 1] += audioData->getBuffer()[2 * i + 1];
 		}
-
-
-		audioData->clearBuffer();
-
-		audioData->SwitchBuffer();
-		audioData->isAvailable = true;
+		audioData->isPopulated.store(false);
 	}
 }
 
 void AoedeAudio::init()
 {
-	m_audioLoader = std::make_unique<AudioLoader>();
 	m_audioVoiceManager = new AudioVoiceManager();
-	bufferPtr = new AudioRingBuffer();
+
+	bufferPtr = new AudioSwapChain(m_numFrames, m_channels);
+	m_audioMixer = std::make_unique<AudioMixer>(m_numFrames, m_channels, m_sampleRate);
 
 	PopulateAudioBuffer();
 
 	saudio_desc audioDescriptor = {};
 
-	audioDescriptor.num_channels = 2;
+	audioDescriptor.num_channels = m_channels;
 	audioDescriptor.stream_userdata_cb = audioCallback;
-	audioDescriptor.sample_rate = 44100 *2;
-		//audioDescriptor.buffer_frames = 1;
+	audioDescriptor.sample_rate = m_sampleRate * m_channels;
 	audioDescriptor.user_data = (void*)bufferPtr;
-	
 	saudio_setup(&audioDescriptor);
 	
 	if (!saudio_isvalid())
@@ -72,40 +66,14 @@ void AoedeAudio::init()
 	}
 }
 
-void processAudio(float* audio, int numframes, float att, float leftpan, float rightpan)
-
-{
-	for (int i = 0; i < numframes; ++i)
-	{
-		audio[2 * i + 0] *= leftpan;
-		audio[2 * i + 1] *= rightpan;
-	}
-}
-
 void AoedeAudio::PopulateAudioBuffer()
 {
 	m_audioVoiceManager->updateVoices();
-	std::vector<AudioVoice*>* voices = m_audioVoiceManager->getActiveVoices();
-	
-	for (auto& it = voices->begin(); it < voices->end(); ++it)
+	if (!bufferPtr->isPopulated.load())
 	{
-		if ((*it)->isActive() && (*it)->currentFrame < (*it)->numFrames && !bufferPtr->isPopulated)
-		{
-
-			bufferPtr->write(2048 % ((*it)->numFrames - (*it)->currentFrame), m_audioLoader->GetAudio((*it)->getAudioHandle()->getDesc().filename)->data, (*it)->currentFrame, (*it)->getAttenuation(), (*it)->getPanL(), (*it)->getPanR());
-			(*it)->currentFrame += 2048;
-		}
-
-		if ((*it)->isActive() && (*it)->currentFrame > (*it)->numFrames)
-		{
-			(*it)->setActive(false);
-			(*it)->currentFrame = 0;
-		}
+		bufferPtr->write(m_audioMixer->outputAudio(m_audioVoiceManager->getActiveVoices(), m_audioVoiceManager->getActiveListener()));
+		bufferPtr->isPopulated.store(true);
 	}
-
-	bufferPtr->isPopulated = true;
-
-	
 }
 
 void AoedeAudio::playSound(AudioHandle handle)
@@ -115,14 +83,14 @@ void AoedeAudio::playSound(AudioHandle handle)
 		// Handle Name Already exists
 	}
 
-	if (m_audioLoader->GetAudio(handle.getDesc().filename) == nullptr)
+	if (AudioLoader::getInstance().GetAudio(handle.getDesc().filename) == nullptr)
 	{
-		m_audioLoader->loadAudio(handle.getDesc().filename);
+		AudioLoader::getInstance().loadAudio(handle.getDesc().filename);
 	}
 
 	m_audioHandles.insert({ handle.getName(), handle });
 
-	int numframes = m_audioLoader->GetAudio(handle.getDesc().filename)->numFrames;
+	int numframes = AudioLoader::getInstance().GetAudio(handle.getDesc().filename)->numFrames;
 	m_audioVoiceManager->allocateVoice(&m_audioHandles[handle.getName()], numframes);
 	m_audioVoiceManager->activateVoice(&m_audioHandles[handle.getName()]);
 }

@@ -3,15 +3,15 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include "AudioLoader.h"
-class AudioVoiceManager;
 
+class AudioVoiceManager;
 class AudioHandle;
-class AudioRingBuffer;
+class AudioMixer;
+class AudioSwapChain;
 class AoedeAudio
 {
 public:
-	AoedeAudio();
+	AoedeAudio(int numFrames, int channels, int sampleRate);
 	~AoedeAudio();
 	void init();
 	void update();
@@ -21,9 +21,12 @@ public:
 	AudioVoiceManager* getAudioVoiceManager();
 private:
 	std::map<std::string, AudioHandle> m_audioHandles;
-	std::unique_ptr<AudioLoader> m_audioLoader;
 	AudioVoiceManager* m_audioVoiceManager;
-	std::vector<AudioLoader::AudioData*> data;
-	AudioRingBuffer* bufferPtr;
+
+	std::unique_ptr<AudioMixer> m_audioMixer;
+	AudioSwapChain* bufferPtr;
+	int m_numFrames;
+	int m_channels;
+	int m_sampleRate;
 };
 

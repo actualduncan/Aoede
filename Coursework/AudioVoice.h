@@ -1,32 +1,25 @@
 #pragma once
-#include "AudioHelpers.h"
+
 #include <iostream>
+class AudioHandle;
 class AudioVoice
 {
 public:
-	AudioVoice(int id) : id(id) { m_audioHandle = nullptr; };
-	~AudioVoice() {};
+	AudioVoice(int id);
+	~AudioVoice();
 	void update(int bufferSize);
-	void setAudioHandle(AudioHandle* audioHandle) { m_audioHandle = audioHandle;  };
-	AudioHandle* getAudioHandle() { return m_audioHandle; };
-	bool isActive() { return m_isActive; };
-	void setActive(bool active) { m_isActive = active; };
-	void setAttenuation(float att)
-	{
-		attenuation = att;
-	};
-	float getAttenuation() { return attenuation; };
-	void setPan(float left, float right) { 
-		lastPanL = panL;
-		lastPanR = panR;
-		panL = left;
-		panR = right;
-	};
+	void setAudioHandle(AudioHandle* audioHandle);
+	AudioHandle* getAudioHandle();
+	bool isActive();
+	void setActive(bool active);
+	void setAttenuation(float att);
+	float getAttenuation();
+	void setPan(float left, float right);
 
-	float getPanL() { return panL; };
-	float getPanR() { return panR; };
-	float getLastPanL() { return lastPanL; };
-	float getLastPanR() { return lastPanR; };
+	float getPanL();
+	float getPanR();
+	float getLastPanL();
+	float getLastPanR();
 
 	bool populated;
 	int currentFrame = 0;
@@ -44,6 +37,7 @@ private:
 	float lastPanL;
 	float lastPanR;
 	float attenuation;
+
 	bool isLooping;
 	bool m_isActive;
 

@@ -170,7 +170,8 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="AudioListener.cpp" />
     <ClCompile Include="AudioLoader.cpp" />
-    <ClCompile Include="AudioRingBuffer.cpp" />
+    <ClCompile Include="AudioMixer.cpp" />
+    <ClCompile Include="AudioSwapChain.cpp" />
     <ClCompile Include="AudioVoice.cpp" />
     <ClCompile Include="AudioVoiceManager.cpp" />
     <ClCompile Include="ColourShader.cpp" />
@@ -198,7 +199,8 @@
     <ClInclude Include="AudioHelpers.h" />
     <ClInclude Include="AudioListener.h" />
     <ClInclude Include="AudioLoader.h" />
-    <ClInclude Include="AudioRingBuffer.h" />
+    <ClInclude Include="AudioMixer.h" />
+    <ClInclude Include="AudioSwapChain.h" />
     <ClInclude Include="AudioVoice.h" />
     <ClInclude Include="AudioVoiceManager.h" />
     <ClInclude Include="ColourShader.h" />
@@ -210,6 +212,7 @@
     <ClInclude Include="dr_mp3.h" />
     <ClInclude Include="dr_wav.h" />
     <ClInclude Include="HorizontalBlurShader.h" />
+    <ClInclude Include="MathHelpers.h" />
     <ClInclude Include="sokol_audio.h" />
     <ClInclude Include="structsforuse.h" />
     <ClInclude Include="TessellationPlane.h" />

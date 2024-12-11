@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+
 struct vec3
 {
 	float x, y, z;
@@ -27,3 +28,5 @@ private:
 	AudioDesc m_desc;
 	vec3 m_position;
 };
+
+
