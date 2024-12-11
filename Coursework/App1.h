@@ -21,7 +21,8 @@
 #include "ComputeUpSample.h"
 #include "ComputeBlend.h"
 #include "ColourShader.h"
-
+#include "AudioListener.h"
+class AoedeAudio;
 // main application
 class App1 : public BaseApplication
 {
@@ -53,8 +54,9 @@ protected:
 	void finalpass();
 
 private:
-
-
+	char* buffer;
+	AoedeAudio* audio;
+	AudioListener* listener;
 	// Models and Objects
 	AModel* boatModel, * crateModel, * barrelModel, * woodenBoxModel, * kegModel;
 	SphereMesh* sphere;
@@ -105,6 +107,8 @@ private:
 	float waveTwoDir[2];
 	float waveThreeDir[2];
 	float waveFourDir[2];
+	float audioxyz[3];
+	float audio2xyz[3];
 	bool displayShadowMaps[MAX_LIGHTS];
 	
 

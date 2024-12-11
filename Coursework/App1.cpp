@@ -1,10 +1,13 @@
 // Lab1.cpp
 // Lab 1 example, simple coloured triangle mesh
 #include "App1.h"
-
+#include "Audio.h"
+#include <string>
+#include "AudioHelpers.h"
+#include "AudioVoiceManager.h"
 App1::App1()
 {
-
+	buffer = new char[50];
 }
 App1::~App1()
 {
@@ -74,7 +77,11 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	// Call super/parent init function (required!)
 	BaseApplication::init(hinstance, hwnd, screenWidth, screenHeight, in, VSYNC, FULL_SCREEN);
 
+	audio = new AoedeAudio(2048, 2, 44100);
+	audio->init();
+	listener = new AudioListener();
 
+	audio->getAudioVoiceManager()->setListener(listener);
 	//init
 	initShadowMaps();
 	initLighting();
@@ -300,6 +307,12 @@ void App1::initGUI() // Setup GUI Variables
 	waterTessellation = 1.0f;
 	viewMode = 1;
 
+	for (int i = 0; i < 3; ++i)
+	{
+		audioxyz[i] = 0;
+		audio2xyz[i] = 0;
+	}
+
 	for (int i = 0; i < MAX_LIGHTS; i++)
 	{
 		displayShadowMaps[i] = false;
@@ -323,9 +336,14 @@ bool App1::frame()
 {
 	
 	bool result;
-	
+	listener->UpdatePosition(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
+	listener->UpdateRotation(camera->getForwardVector().x, camera->getForwardVector().y, camera->getForwardVector().z);
+	listener->UpdateRight(camera->getRightVector().x, camera->getRightVector().y, camera->getRightVector().z);
 	updateInput();
-	
+	audio->updatePosition("yes", audioxyz[0], audioxyz[1], audioxyz[2]);
+	audio->updatePosition("yes3", audio2xyz[0], audio2xyz[1], audio2xyz[2]);
+	audio->PopulateAudioBuffer();
+
 	result = BaseApplication::frame();
 
 	timeInSeconds += timer->getTime();
@@ -645,8 +663,15 @@ void App1::basepass()
 		colourShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights[i]->getDiffuseColour());
 		colourShader->render(renderer->getDeviceContext(), sphere->getIndexCount());
 	}
+	worldMatrix = XMMatrixTranslation(audioxyz[0], audioxyz[1], audioxyz[2]);
+	sphere->sendData(renderer->getDeviceContext());
+	colourShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights[0]->getDiffuseColour());
+	colourShader->render(renderer->getDeviceContext(), sphere->getIndexCount());
 
-	
+	worldMatrix = XMMatrixTranslation(audio2xyz[0], audio2xyz[1], audio2xyz[2]);
+	sphere->sendData(renderer->getDeviceContext());
+	colourShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights[1]->getDiffuseColour());
+	colourShader->render(renderer->getDeviceContext(), sphere->getIndexCount());
 	// display shadow maps based on GUI
 	for (int i = 0; i < MAX_LIGHTS; i++)
 	{
@@ -706,6 +731,28 @@ void App1::gui()
 	// Build UI
 	ImGui::Text("FPS: %.2f", timer->getFPS());
 	ImGui::Checkbox("Wireframe mode", &wireframeToggle);
+	
+	if (ImGui::Button("play loop"))
+	{
+		{
+			AudioDesc desc{};
+			desc.filename = "res/loop.wav";
+			desc.isLooping = true;
+			std::string name = "yes";
+			AudioHandle handle(name, desc, audioxyz[0], audioxyz[1], audioxyz[2]);
+			audio->playSound(handle);
+
+		}
+	}
+	ImGui::SliderFloat3("loop pos", audioxyz, -20.0f, 20.0f);
+	if (ImGui::Button("play loop 2"))
+	{
+		AudioDesc desc{};
+		desc.filename = "res/woo.mp3";
+		AudioHandle handle("yes3", desc, audio2xyz[0], audio2xyz[1], audio2xyz[2]);
+		audio->playSound(handle);
+	}
+	ImGui::SliderFloat3("loop2 pos", audio2xyz, -20.0f, 20.0f);
 	if (wireframeToggle)
 	{
 		viewMode = 0;
